@@ -88,7 +88,9 @@ plt.xlabel("Temperature Difference (Ti - To)")
 plt.ylabel("Thermal Conductivity (W/mK)")
 plt.title("k vs Temperature Difference")
 plt.grid(True)
-plt.show()
+plt.savefig("filename1.png")
+plt.close()
+
 
 # 3️⃣ Voltage vs Heat Input
 plt.figure()
@@ -97,4 +99,6 @@ plt.xlabel("Voltage (V)")
 plt.ylabel("Heat Input (W)")
 plt.title("Voltage vs Heat Input")
 plt.grid(True)
-plt.show()
+plt.savefig("filename2.png")
+plt.close()
+
