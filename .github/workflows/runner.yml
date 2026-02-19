@@ -1,0 +1,29 @@
+name: Run Experiment 1 (Rod)
+
+on:
+  push:
+    paths:
+      - '01_nusseltCorrelation/**'
+      - '.github/workflows/runner.yml'
+
+jobs:
+  run-exp1:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - run: pip install -r requirements.txt
+
+    - run: |
+        cd exp1_rod
+        python thermal_conductivity_rod.py
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: exp1-results
+        path: exp1_rod/
