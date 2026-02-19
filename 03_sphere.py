@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import yaml
 
 # ==========================================================
 # CONSTANTS
@@ -10,10 +11,18 @@ Ri = 0.05   # Inner radius (m)
 Ro = 0.10   # Outer radius (m)
 
 # ==========================================================
-# READ CSV
+# READ YAML
 # ==========================================================
 
-df = pd.read_csv("spherical_conduction.csv")
+with open("input_data.yaml", "r") as file:
+    yaml_data = yaml.safe_load(file)
+
+exp = yaml_data["temperature_distribution_experiment"]
+
+if not exp["enabled"]:
+    raise ValueError("temperature_distribution_experiment is disabled in YAML")
+
+data_list = exp["data"]
 
 # ==========================================================
 # CALCULATIONS
@@ -21,19 +30,18 @@ df = pd.read_csv("spherical_conduction.csv")
 
 results = []
 
-for index, row in df.iterrows():
+for data in data_list:
 
-    V = row["Voltage_V"]
-    I = row["Current_A"]
+    V = data["Voltage_V"]
+    I = data["Current_A"]
 
-    # Inner temps (T1–T4)
-    Ti = np.mean([row["T1"], row["T2"], row["T3"], row["T4"]])
+    T = np.array(data["T_values"])
 
-    # Outer temps (T5–T10)
-    To = np.mean([
-        row["T5"], row["T6"], row["T7"],
-        row["T8"], row["T9"], row["T10"]
-    ])
+    # Inner temps → first 4
+    Ti = np.mean(T[:4])
+
+    # Outer temps → remaining
+    To = np.mean(T[4:])
 
     # Heat input
     Q = V * I
@@ -82,7 +90,7 @@ plt.title("k vs Temperature Difference")
 plt.grid(True)
 plt.show()
 
-# 3️⃣ Voltage vs Heat Input (sanity check)
+# 3️⃣ Voltage vs Heat Input
 plt.figure()
 plt.plot(results_df["Voltage_V"], results_df["Heat_Input_W"], marker='o')
 plt.xlabel("Voltage (V)")
