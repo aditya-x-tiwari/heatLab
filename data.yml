@@ -1,0 +1,71 @@
+# ================================
+# Experiment 1: Height vs Voltage
+# ================================
+height_voltage_experiment:
+  enabled: true  # set to false if you don't want to use this dataset
+
+  data:
+    - H_mm: 10
+      Voltage_V: 43
+      Te_C: 95.0
+      Td_C: 24.0
+
+    - H_mm: 20
+      Voltage_V: 45
+      Te_C: 95.2
+      Td_C: 23.4
+
+    - H_mm: 30
+      Voltage_V: 46
+      Te_C: 95.1
+      Td_C: 23.1
+
+    - H_mm: 40
+      Voltage_V: 48
+      Te_C: 95.0
+      Td_C: 23.3
+
+    - H_mm: 50
+      Voltage_V: 49
+      Te_C: 95.7
+      Td_C: 23.2
+
+
+# =========================================
+# Experiment 2: Water Flow + Temperature
+# =========================================
+water_flow_experiment:
+  enabled: true
+
+  data:
+    Voltage_V: 80.8
+    Current_A: 0.51
+    WaterFlow_kg_s: 0.00175
+    T_values: [65, 63, 61.7, 58.67, 56.64, 54.62, 52.69, 50.56, 48.53]
+    Water_In_C: 25
+    Water_Out_C: 30
+
+
+# =========================================
+# Experiment 3: Temperature Distribution
+# =========================================
+temperature_distribution_experiment:
+  enabled: true
+
+  data:
+    - Voltage_V: 40.6
+      Current_A: 0.106
+      T_values: [42, 42, 42, 42, 34, 34, 34, 34, 34, 34]
+
+    - Voltage_V: 50.4
+      Current_A: 0.136
+      T_values: [49, 49, 49, 49, 35, 35, 35, 35, 35, 35]
+
+    - Voltage_V: 60.2
+      Current_A: 0.163
+      T_values: [55, 55, 55, 55, 36, 36, 36, 36, 36, 36]
+
+    - Voltage_V: 70.7
+      Current_A: 0.192
+      T_values: [64, 64, 64, 64, 37, 37, 37, 37, 37, 37]
+
