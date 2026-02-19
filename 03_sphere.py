@@ -13,7 +13,7 @@ Ro = 0.10   # Outer radius (m)
 # READ CSV
 # ==========================================================
 
-df = pd.read_csv("spherical_conduction.csv")
+df = pd.read_csv("input_data.csv")
 
 # ==========================================================
 # CALCULATIONS
