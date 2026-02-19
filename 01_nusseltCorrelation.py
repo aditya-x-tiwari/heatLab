@@ -1,37 +1,22 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import yaml
 
-# ==========================================================
-# CONSTANTS (From Lab Sheet)
-# ==========================================================
-
+# -----------------------------
+# CONSTANTS (From Experiment Sheet)
+# -----------------------------
 d = 0.0158              # Diameter (m)
 A = 2.482e-2            # Heated area (m^2)
 R = 70                  # Resistance (ohm)
-C = 4.294               # Velocity constant
-k = 0.026               # Thermal conductivity (W/m.K)
-rho = 1.165             # Density (kg/m3)
+C = 4.294               # Velocity constant from sheet
+k = 0.026               # Thermal conductivity of air (W/m.K)
+rho = 1.165             # Density of air (kg/m3)
 mu = 1.85e-5            # Dynamic viscosity (Pa.s)
 
-nu = mu / rho           # Kinematic viscosity
-
-# ==========================================================
-# READ YAML
-# ==========================================================
-
-with open("input_data.yaml", "r") as file:
-    yaml_data = yaml.safe_load(file)
-
-# Select experiment
-exp = yaml_data["height_voltage_experiment"]
-
-if not exp["enabled"]:
-    raise ValueError("height_voltage_experiment is disabled in YAML")
-
-# Convert YAML → DataFrame
-df = pd.DataFrame(exp["data"])
+# -----------------------------
+# READ CSV FILE
+# -----------------------------
+df = pd.read_csv("input_data.csv")
 
 # Extract columns
 H_mm = df["H_mm"].values
@@ -39,121 +24,92 @@ V = df["Voltage_V"].values
 Te = df["Te_C"].values
 Td = df["Td_C"].values
 
-# ==========================================================
+# -----------------------------
 # CALCULATIONS
-# ==========================================================
+# -----------------------------
 
+# Convert H to meters
 H = H_mm / 1000
+
+# Air velocity
 U = C * np.sqrt(H)
+
+# Heat input
 Q = (V**2) / R
+
+# Heat flux
 q = Q / A
+
+# Film temperature
 Tf = (Te + Td) / 2
+
+# Kinematic viscosity
+nu = mu / rho
+
+# Reynolds number
 Re = (U * d) / nu
+
+# Heat transfer coefficient
 h = q / (Te - Td)
+
+# Nusselt number
 Nu = (h * d) / k
 
-# ==========================================================
-# FLOW REGIME
-# ==========================================================
+# -----------------------------
+# CORRELATION VALUES (From Sheet)
+# -----------------------------
+Nu_corr_1 = 0.615 * (Re**0.466)
+Nu_corr_2 = 0.174 * (Re**0.618)
+Nu_corr_3 = 0.0239 * (Re**0.805)
 
-flow_regime = []
-
-for r in Re:
-    if r < 4000:
-        flow_regime.append("Laminar")
-    elif 4000 <= r < 40000:
-        flow_regime.append("Transition")
-    else:
-        flow_regime.append("Turbulent")
-
-# ==========================================================
-# CORRELATIONS
-# ==========================================================
-
-Nu_corr_1 = 0.615 * (Re ** 0.466)
-Nu_corr_2 = 0.174 * (Re ** 0.618)
-Nu_corr_3 = 0.0239 * (Re ** 0.805)
-
-# ==========================================================
-# POWER LAW FIT
-# ==========================================================
-
-log_Re = np.log(Re)
-log_Nu = np.log(Nu)
-
-n, log_C = np.polyfit(log_Re, log_Nu, 1)
-C_exp = np.exp(log_C)
-
-Nu_fit = C_exp * (Re ** n)
-
-# ==========================================================
+# -----------------------------
 # SAVE RESULTS
-# ==========================================================
-
+# -----------------------------
 df["Velocity_m_s"] = U
 df["Heat_Input_W"] = Q
-df["Heat_Flux_W_m2"] = q
-df["Film_Temp_C"] = Tf
 df["Re"] = Re
-df["Flow_Regime"] = flow_regime
 df["h_W_m2K"] = h
 df["Nu"] = Nu
 df["Nu_corr_1"] = Nu_corr_1
 df["Nu_corr_2"] = Nu_corr_2
 df["Nu_corr_3"] = Nu_corr_3
-df["Nu_fit"] = Nu_fit
 
 df.to_csv("output_results.csv", index=False)
 
-print("\n==============================")
-print("Experimental Power Law Fit:")
-print(f"Nu = {C_exp:.4f} Re^{n:.4f}")
-print("==============================")
-print("\nResults saved to output_results.csv")
+print("\nAll values computed and saved to output_results.csv")
 
-# ==========================================================
+# -----------------------------
 # PLOTS
-# ==========================================================
+# -----------------------------
 
+# 1. Nu vs Re
 plt.figure()
-plt.plot(Re, Nu, marker='o', label="Experimental")
-plt.plot(Re, Nu_corr_1, linestyle='--', label="Corr 1")
-plt.plot(Re, Nu_corr_2, linestyle='--', label="Corr 2")
-plt.plot(Re, Nu_corr_3, linestyle='--', label="Corr 3")
+plt.plot(Re, Nu, marker='o')
 plt.xlabel("Re")
 plt.ylabel("Nu")
 plt.title("Nu vs Re")
-plt.legend()
-plt.grid(True)
-plt.savefig("plot0.png")
+plt.show()
 
-
+# 2. Log-Log Plot
 plt.figure()
-plt.loglog(Re, Nu, marker='o', label="Experimental")
-plt.loglog(Re, Nu_fit, linestyle='--', label="Power Law Fit")
+plt.loglog(Re, Nu, marker='o')
 plt.xlabel("Re")
 plt.ylabel("Nu")
 plt.title("Log-Log: Nu vs Re")
-plt.legend()
-plt.grid(True, which="both")
-plt.savefig("plot1.png")
-plt.close()
+plt.show()
 
+# 3. h vs Re
 plt.figure()
 plt.plot(Re, h, marker='o')
 plt.xlabel("Re")
-plt.ylabel("h (W/m²K)")
+plt.ylabel("h (W/m2K)")
 plt.title("h vs Re")
-plt.grid(True)
-plt.savefig("plot2.png")
-plt.close()
+plt.show()
 
+# 4. Velocity vs Re
 plt.figure()
 plt.plot(Re, U, marker='o')
 plt.xlabel("Re")
 plt.ylabel("Velocity (m/s)")
 plt.title("Velocity vs Re")
-plt.grid(True)
-plt.savefig("plot3.png")
-plt.close()
-
+plt.show()
