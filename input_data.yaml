@@ -12,13 +12,13 @@ height_voltage_experiment:
 
     - H_mm: 20
       Voltage_V: 45
-      Te_C: 95.2
+      Te_C: 95.1
       Td_C: 23.4
 
     - H_mm: 30
       Voltage_V: 46
       Te_C: 95.1
-      Td_C: 23.1
+      Td_C: 23.4
 
     - H_mm: 40
       Voltage_V: 48
@@ -27,7 +27,7 @@ height_voltage_experiment:
 
     - H_mm: 50
       Voltage_V: 49
-      Te_C: 95.7
+      Te_C: 95.3
       Td_C: 23.2
 
 
@@ -39,9 +39,9 @@ water_flow_experiment:
 
   data:
     Voltage_V: 80.8
-    Current_A: 0.51
+    Current_A: 0.781
     WaterFlow_kg_s: 0.00175
-    T_values: [65, 63, 61.7, 58.67, 56.64, 54.62, 52.69, 50.56, 48.53]
+    T_values: [65, 63, 61, 58, 56, 54, 52, 50, 48]
     Water_In_C: 25
     Water_Out_C: 30
 
