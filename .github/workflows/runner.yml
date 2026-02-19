@@ -29,3 +29,9 @@ jobs:
         with:
           name: experiment-1-results
           path: output_results.csv
+          
+      - name: Upload plots
+        uses: actions/upload-artifact@v4
+        with:
+          name: experiment-1-plots
+          path: "*.png"
