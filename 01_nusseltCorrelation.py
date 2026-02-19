@@ -125,7 +125,8 @@ plt.ylabel("Nu")
 plt.title("Nu vs Re")
 plt.legend()
 plt.grid(True)
-plt.show()
+plt.savefig("plot0.png")
+
 
 plt.figure()
 plt.loglog(Re, Nu, marker='o', label="Experimental")
@@ -135,7 +136,8 @@ plt.ylabel("Nu")
 plt.title("Log-Log: Nu vs Re")
 plt.legend()
 plt.grid(True, which="both")
-plt.show()
+plt.savefig("plot1.png")
+
 
 plt.figure()
 plt.plot(Re, h, marker='o')
@@ -143,7 +145,8 @@ plt.xlabel("Re")
 plt.ylabel("h (W/m²K)")
 plt.title("h vs Re")
 plt.grid(True)
-plt.show()
+plt.savefig("plot2.png")
+
 
 plt.figure()
 plt.plot(Re, U, marker='o')
@@ -151,4 +154,5 @@ plt.xlabel("Re")
 plt.ylabel("Velocity (m/s)")
 plt.title("Velocity vs Re")
 plt.grid(True)
-plt.show()
+plt.savefig("plot3.png")
+
