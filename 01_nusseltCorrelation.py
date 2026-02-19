@@ -6,13 +6,16 @@ import matplotlib.pyplot as plt
 # CONSTANTS (From Lab Sheet)
 # ==========================================================
 
+duct = 65*150e-6        # Duct Cross-Section (m^2)
 d = 0.0158              # Diameter (m)
-A = 2.482e-2            # Heated area (m^2)
+l = 0.05                # Length (m)
+A = 2.482e-6            # Heated area (m^2)
 R = 70                  # Resistance (ohm)
-C = 4.294               # Velocity constant from sheet
+C = 74.294              # Velocity constant from sheet
 k = 0.026               # Thermal conductivity of air (W/m.K)
 rho = 1.165             # Density of air (kg/m3 at ~30C)
 mu = 1.85e-5            # Dynamic viscosity (Pa.s at ~30C)
+Pa = 775*13600*9.81/1000 # Atmospheric Pressure (Pa) 
 
 nu = mu / rho           # Kinematic viscosity
 
@@ -35,7 +38,7 @@ Td = df["Td_C"].values
 H = H_mm / 1000
 
 # Air velocity
-U = C * np.sqrt(H)
+U = C * np.sqrt(H*Te/Pa)
 
 # Electrical heat input
 Q = (V**2) / R
