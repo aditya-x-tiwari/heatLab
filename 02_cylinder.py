@@ -20,7 +20,7 @@ x = np.linspace(0, L, 9)
 # READ CSV
 # ==========================================================
 
-df = pd.read_csv("rod_data.csv")
+df = pd.read_csv("input_data.csv")
 
 V = df["Voltage_V"].values[0]
 I = df["Current_A"].values[0]
