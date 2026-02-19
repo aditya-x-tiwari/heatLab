@@ -1,4 +1,4 @@
-name: Run Heat Lab Experiment 1
+name: Run Heat Lab Experiments
 
 on:
   push:
@@ -21,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Experiment 1 (Nusselt Correlation)
-        run: python 01_nusseltCorrelation.py
+      - name: Run Experiment
+        run: python 03_sphere.py
         
       - name: Upload results
         uses: actions/upload-artifact@v4
