@@ -22,7 +22,10 @@ Voltage_V,Current_A,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10
 
 # Temperature distribution along a pin fin 
 
-
+run,voltage,manometer_diff_cm,T1,T2,T3,T4,T5,T_ambient
+1,82,9.3,70,67,66,65,64,33
+2,82,7.3,76,74,73,72,71,33
+3,82,4.6,82,80,79,78,76,33
 
 
 
