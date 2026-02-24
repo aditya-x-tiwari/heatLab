@@ -3,33 +3,30 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # ==========================================================
-# CONSTANTS (From Sheet)
+# CONSTANTS
 # ==========================================================
 
-d = 0.025            # Diameter (m)
-L = 0.176            # Test length (m)
-k_water = 4180       # Cp of water (J/kgK)
+d = 0.025                  # rod diameter (m)
+L_total = 0.176            # total length (m)
+cp_water = 4181            # J/kgK
+K_ins = 0.34               # insulation conductivity (W/mK)
 
-# Cross-sectional area
-A = np.pi * (d**2) / 4
+r_i = 0.04                 # inner radius 
+r_o = 0.06                # outer radius 
 
-# Positions along rod (9 points evenly spaced)
-x = np.linspace(0, L, 9)
+A = np.pi * d**2 / 4
+dx = L_total / 8           # spacing between 9 thermocouples
 
 # ==========================================================
-# READ CSV
+# READ DATA
 # ==========================================================
 
 df = pd.read_csv("input_data.csv")
 
-V = df["Voltage_V"].values[0]
-I = df["Current_A"].values[0]
 m_dot = df["WaterFlow_kg_s"].values[0]
-
 T_water_in = df["Water_In_C"].values[0]
 T_water_out = df["Water_Out_C"].values[0]
 
-# Rod temperatures
 T = np.array([
     df["T1"].values[0],
     df["T2"].values[0],
@@ -43,85 +40,92 @@ T = np.array([
 ])
 
 # ==========================================================
-# CALCULATIONS
+# SECTION AA
 # ==========================================================
 
-# Heat input
-Q_elec = V * I
+Q_AA = m_dot * cp_water * (T_water_out - T_water_in)
 
-# Heat removed by water
-Q_water = m_dot * k_water * (T_water_out - T_water_in)
+dTdx_AA = (T[1] - T[0]) / dx
+k_AA = -Q_AA / (A * dTdx_AA)
 
-# Average heat flow
-Q_avg = (Q_elec + Q_water) / 2
-
-# Temperature gradient (linear fit)
-coeffs = np.polyfit(x, T, 1)
-dT_dx = coeffs[0]
-
-# Thermal conductivity
-k = -Q_avg / (A * dT_dx)
+T_mean_AA = (T[1] + T[0]) / 2
 
 # ==========================================================
-# RADIAL LOSS (OPTIONAL INSIGHT)
+# RADIAL LOSS AB
 # ==========================================================
 
-Q_loss = Q_elec - Q_water
+L_AB = dx * 3  # adjust based on geometry
+
+Q_radial_AB = (2*np.pi*K_ins*L_AB*(T[3]-T[2])) / np.log(r_o/r_i)
+
+Q_BB = Q_AA + Q_radial_AB
 
 # ==========================================================
-# SAVE RESULTS
+# SECTION BB
 # ==========================================================
 
-results = pd.DataFrame({
-    "Q_electrical_W": [Q_elec],
-    "Q_water_W": [Q_water],
-    "Q_average_W": [Q_avg],
-    "Temperature_gradient_K_per_m": [dT_dx],
-    "Thermal_conductivity_W_mK": [k],
-    "Heat_loss_W": [Q_loss]
-})
+dTdx_BB = 0.5 * (
+    (T[5] - T[4]) / dx +
+    (T[4] - T[3]) / dx
+)
 
-results.to_csv("rod_results.csv", index=False)
+k_BB = -Q_BB / (A * dTdx_BB)
 
-print("\n==============================")
-print(f"Thermal Conductivity k = {k:.2f} W/mK")
-print("==============================")
+T_mean_BB = (T[5] + T[4]) / 2
+
+# ==========================================================
+# RADIAL LOSS BC
+# ==========================================================
+
+L_BC = dx * 3
+
+Q_radial_BC = (2*np.pi*K_ins*L_BC*(T[8]-T[7])) / np.log(r_o/r_i)
+
+Q_CC = Q_BB + Q_radial_BC
+
+# ==========================================================
+# SECTION CC
+# ==========================================================
+
+dTdx_CC = (T[8] - T[7]) / dx
+k_CC = -Q_CC / (A * dTdx_CC)
+
+T_mean_CC = (T[8] + T[7]) / 2
+
+# ==========================================================
+# PRINT RESULTS
+# ==========================================================
+
+print("\nThermal Conductivity Values:")
+print(f"k_AA = {k_AA:.2f} W/mK")
+print(f"k_BB = {k_BB:.2f} W/mK")
+print(f"k_CC = {k_CC:.2f} W/mK")
 
 # ==========================================================
 # PLOTS
 # ==========================================================
 
-# 1️⃣ Temperature Distribution
+# Temperature vs Distance
+x = np.linspace(0, L_total, 9)
+
 plt.figure()
 plt.plot(x, T, marker='o')
-plt.xlabel("Position along rod (m)")
+plt.xlabel("Distance (m)")
 plt.ylabel("Temperature (°C)")
-plt.title("Temperature Distribution along Rod")
+plt.title("Temperature Distribution")
 plt.grid(True)
-plt.savefig("plot1.png")
+plt.savefig("T_vs_x.png")
 plt.close()
 
-# 2️⃣ Linear Fit Plot
-plt.figure()
-plt.plot(x, T, 'o', label="Experimental")
-plt.plot(x, np.polyval(coeffs, x), linestyle='--', label="Linear Fit")
-plt.xlabel("Position (m)")
-plt.ylabel("Temperature (°C)")
-plt.title("Linear Fit for Temperature Gradient")
-plt.legend()
-plt.grid(True)
-plt.savefig("plot2.png")
-plt.close()
-
-# 3️⃣ Log Temperature Difference (advanced)
-T_inf = T_water_in
-theta = T - T_inf
+# k vs Mean Temperature
+k_values = [k_AA, k_BB, k_CC]
+T_means = [T_mean_AA, T_mean_BB, T_mean_CC]
 
 plt.figure()
-plt.semilogy(x, theta, marker='o')
-plt.xlabel("Position (m)")
-plt.ylabel("Temperature Excess (log scale)")
-plt.title("Log Plot of Temperature Distribution")
+plt.plot(T_means, k_values, marker='o')
+plt.xlabel("Mean Temperature (°C)")
+plt.ylabel("Thermal Conductivity (W/mK)")
+plt.title("k vs Temperature")
 plt.grid(True)
-plt.savefig("plot3.png")
+plt.savefig("k_vs_T.png")
 plt.close()
