@@ -60,6 +60,9 @@ Q = (V**2) / R
 q = Q / A
 
 # Reynolds number at film temperature
+rho_f = PropsSI("D", "T", Tf, "P", Pa, "Air")
+mu_f  = PropsSI("VISCOSITY", "T", Tf, "P", Pa, "Air")
+nu_f = mu_f / rho_f          # Kinematic viscosity
 Re_f = (U * d) / nu_f
 
 # Reynolds number
