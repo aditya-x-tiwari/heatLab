@@ -11,8 +11,8 @@ L_total = 0.176            # total length (m)
 cp_water = 4181            # J/kgK
 K_ins = 0.34               # insulation conductivity (W/mK)
 
-r_i = 0.04                 # inner radius 
-r_o = 0.06                # outer radius 
+r_i = 0.04              # inner radius
+r_o = 0.06              # outer radius 
 
 A = np.pi * d**2 / 4
 dx = L_total / 8           # spacing between 9 thermocouples
@@ -26,6 +26,10 @@ df = pd.read_csv("input_data.csv")
 m_dot = df["WaterFlow_kg_s"].values[0]
 T_water_in = df["Water_In_C"].values[0]
 T_water_out = df["Water_Out_C"].values[0]
+T_AB_in = df["T_AB_in"].values[0]
+T_AB_out = df["T_AB_out"].values[0]
+T_BC_in = df["T_BC_in"].values[0]
+T_BC_out = df["T_BC_out"].values[0]
 
 T = np.array([
     df["T1"].values[0],
@@ -44,8 +48,8 @@ T = np.array([
 # ==========================================================
 
 Q_AA = m_dot * cp_water * (T_water_out - T_water_in)
+dTdx_AA = (T[8] - T[7]) / dx
 
-dTdx_AA = (T[1] - T[0]) / dx
 k_AA = -Q_AA / (A * dTdx_AA)
 
 T_mean_AA = (T[1] + T[0]) / 2
@@ -54,9 +58,9 @@ T_mean_AA = (T[1] + T[0]) / 2
 # RADIAL LOSS AB
 # ==========================================================
 
-L_AB = dx * 3  # adjust based on geometry
+L_AB = dx * 4  # adjust based on geometry
 
-Q_radial_AB = (2*np.pi*K_ins*L_AB*(T[3]-T[2])) / np.log(r_o/r_i)
+Q_radial_AB = (2*np.pi*K_ins*L_AB*(T_AB_out-T_AB_in)) / np.log(r_o/r_i)
 
 Q_BB = Q_AA + Q_radial_AB
 
@@ -77,17 +81,17 @@ T_mean_BB = (T[5] + T[4]) / 2
 # RADIAL LOSS BC
 # ==========================================================
 
-L_BC = dx * 3
+L_BC = dx * 4
 
-Q_radial_BC = (2*np.pi*K_ins*L_BC*(T[8]-T[7])) / np.log(r_o/r_i)
+Q_radial_BC = (2*np.pi*K_ins*L_BC*(T_BC_out-T_BC_in)) / np.log(r_o/r_i)
 
 Q_CC = Q_BB + Q_radial_BC
 
 # ==========================================================
 # SECTION CC
 # ==========================================================
+dTdx_CC = (T[1] - T[0]) / dx
 
-dTdx_CC = (T[8] - T[7]) / dx
 k_CC = -Q_CC / (A * dTdx_CC)
 
 T_mean_CC = (T[8] + T[7]) / 2
