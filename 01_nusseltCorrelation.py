@@ -125,7 +125,7 @@ C = 10**log_C
 print(f"Best fit: Nu = {C:.4f} * Re^{n:.4f}")
 
 # Generate smooth fit line
-Re_fit = np.logspace(np.log10(min(Re)), np.log10(max(Re)), 100)
+Re_fit = np.logspace(np.log10(min(Re_a)), np.log10(max(Re_a)), 100)
 Nu_fit = C * Re_fit**n
 
 
