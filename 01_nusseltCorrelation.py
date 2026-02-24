@@ -113,11 +113,26 @@ print("\nResults saved to output_results.csv")
 # PLOTS
 # ==========================================================
 
+log_Re_a = np.log10(Re_a)
+log_Nu = np.log10(Nu)
+
+# Linear regression
+coeffs = np.polyfit(log_Re_a, log_Nu, 1)
+n = coeffs[0]
+log_C = coeffs[1]
+C = 10**log_C
+
+print(f"Best fit: Nu = {C:.4f} * Re^{n:.4f}")
+
+# Generate smooth fit line
+Re_fit = np.logspace(np.log10(min(Re)), np.log10(max(Re)), 100)
+Nu_fit = C * Re_fit**n
 
 
 #  Log-Log Plot of Nu vs Re_a 
 plt.figure()
 plt.loglog(Re_a, Nu, marker='o', label="Experimental")
+plt.loglog(Re_fit, Nu_fit, label=f'Best Fit: Nu = {C:.3f} Re^{n:.3f}')
 plt.xlabel("Re_a")
 plt.ylabel("Nu")
 plt.title("Log-Log: Nu vs Re")
