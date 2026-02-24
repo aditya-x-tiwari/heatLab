@@ -38,7 +38,7 @@ rho_a = PropsSI("D", "T", Ta, "P", Pa, "Air")
 mu_a  = PropsSI("VISCOSITY", "T", Ta, "P", Pa, "Air")
 nu_a = mu_a / rho_a           # Kinematic viscosity
 
-k_a   = PropsSI("CONDUCTIVITY", "T", T_a, "P", Pa, "Air")   # Thermal conductivity of air (W/m.K)
+k_a   = PropsSI("CONDUCTIVITY", "T", Ta, "P", Pa, "Air")   # Thermal conductivity of air (W/m.K)
 Pr_a  = PropsSI("PRANDTL", "T", Ta, "P", Pa, "Air")        # Prandtl's Number of air 
 
 
@@ -51,7 +51,7 @@ Pr_a  = PropsSI("PRANDTL", "T", Ta, "P", Pa, "Air")        # Prandtl's Number of
 H = H_mm / 1000
 
 # Air velocity
-U = C * np.sqrt(H*Te/Pa)
+U = C * np.sqrt(H*Ta/Pa)
 
 # Electrical heat input
 Q = (V**2) / R
