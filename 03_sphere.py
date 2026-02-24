@@ -72,24 +72,13 @@ plt.grid(True)
 plt.savefig("plot1.png")
 plt.close()
 
-# 2️⃣ k vs Temperature Difference
-delta_T = results_df["T_inner_avg_C"] - results_df["T_outer_avg_C"]
-
+# 2️⃣ k vs Inner Surface Temperature 
 plt.figure()
-plt.plot(delta_T, results_df["Thermal_Conductivity_W_mK"], marker='o')
-plt.xlabel("Temperature Difference (Ti - To)")
+plt.plot(results_df["T_inner_avg_C"] , results_df["Thermal_Conductivity_W_mK"], marker='o')
+plt.xlabel("Inner Surface Temperature (Ti)")
 plt.ylabel("Thermal Conductivity (W/mK)")
-plt.title("k vs Temperature Difference")
+plt.title("k vs Inner Surface Temperature ")
 plt.grid(True)
 plt.savefig("plot2.png")
 plt.close()
 
-# 3️⃣ Voltage vs Heat Input (sanity check)
-plt.figure()
-plt.plot(results_df["Voltage_V"], results_df["Heat_Input_W"], marker='o')
-plt.xlabel("Voltage (V)")
-plt.ylabel("Heat Input (W)")
-plt.title("Voltage vs Heat Input")
-plt.grid(True)
-plt.savefig("plot3.png")
-plt.close()
