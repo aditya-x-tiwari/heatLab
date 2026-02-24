@@ -31,7 +31,7 @@ Pa = 775*13600*9.81/1000 # Atmospheric Pressure (Pa)
 Tf = (Ts + Ta) / 2      # Film temperature
 
 rho_s = PropsSI("D", "T", Ts, "P", Pa, "Air")
-mu_s  = PropsSI("VISCOSITY", "T", T, "P", Pa, "Air")
+mu_s  = PropsSI("VISCOSITY", "T", Ts, "P", Pa, "Air")
 nu_s = mu_s / rho_s           # Kinematic viscosity
 
 rho_a = PropsSI("D", "T", Ta, "P", Pa, "Air")
@@ -39,7 +39,7 @@ mu_a  = PropsSI("VISCOSITY", "T", Ta, "P", Pa, "Air")
 nu_a = mu_a / rho_a           # Kinematic viscosity
 
 k_a   = PropsSI("CONDUCTIVITY", "T", T_a, "P", Pa, "Air")   # Thermal conductivity of air (W/m.K)
-Pr_f  = PropsSI("PRANDTL", "T", T_a, "P", Pa, "Air")        # Prandtl's Number of air 
+Pr_a  = PropsSI("PRANDTL", "T", Ta, "P", Pa, "Air")        # Prandtl's Number of air 
 
 
 
@@ -87,7 +87,7 @@ for r in Re_f:
         Nu_1 = 0.0239 * (r ** 0.805)
 
 for r in Re_a:
-        Nu_2 = (0.4 * (r ** 0.5) + 0.06 * (r ** 0.667) ) * (Pr_f ** 0.4) * ((mu_a/mu_s) ** 0.25)
+        Nu_2 = (0.4 * (r ** 0.5) + 0.06 * (r ** 0.667) ) * (Pr_a ** 0.4) * ((mu_a/mu_s) ** 0.25)
 
 
 
