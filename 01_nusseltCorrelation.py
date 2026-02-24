@@ -1,23 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from CoolProp.CoolProp import PropsSI
 
-# ==========================================================
-# CONSTANTS (From Lab Sheet)
-# ==========================================================
-
-duct = 65*150e-6        # Duct Cross-Section (m^2)
-d = 0.0158              # Diameter (m)
-l = 0.05                # Length (m)
-A = 2.482e-6            # Heated area (m^2)
-R = 70                  # Resistance (ohm)
-C = 74.294              # Velocity constant from sheet
-k = 0.026               # Thermal conductivity of air (W/m.K)
-rho = 1.165             # Density of air (kg/m3 at ~30C)
-mu = 1.85e-5            # Dynamic viscosity (Pa.s at ~30C)
-Pa = 775*13600*9.81/1000 # Atmospheric Pressure (Pa) 
-
-nu = mu / rho           # Kinematic viscosity
 
 # ==========================================================
 # READ CSV
@@ -27,8 +12,36 @@ df = pd.read_csv("input_data.csv")
 
 H_mm = df["H_mm"].values
 V = df["Voltage_V"].values
-Te = df["Te_C"].values
-Td = df["Td_C"].values
+Ts = df["Te_C"].values + 273.15
+Ta = df["Td_C"].values + 273.15
+
+
+# ==========================================================
+# CONSTANTS (From Lab Sheet)
+# ==========================================================
+
+duct = 65*150e-6        # Duct Cross-Section (m^2)
+d = 0.0158              # Diameter (m)
+l = 0.05                # Length (m)
+A = 2.482e-3            # Heated area (m^2)
+R = 70                  # Resistance (ohm)
+C = 74.294              # Velocity constant from sheet
+
+Pa = 775*13600*9.81/1000 # Atmospheric Pressure (Pa) 
+Tf = (Ts + Ta) / 2      # Film temperature
+
+rho_s = PropsSI("D", "T", Ts, "P", Pa, "Air")
+mu_s  = PropsSI("VISCOSITY", "T", T, "P", Pa, "Air")
+nu_s = mu_s / rho_s           # Kinematic viscosity
+
+rho_a = PropsSI("D", "T", Ta, "P", Pa, "Air")
+mu_a  = PropsSI("VISCOSITY", "T", Ta, "P", Pa, "Air")
+nu_a = mu_a / rho_a           # Kinematic viscosity
+
+k_a   = PropsSI("CONDUCTIVITY", "T", T_a, "P", Pa, "Air")   # Thermal conductivity of air (W/m.K)
+Pr_f  = PropsSI("PRANDTL", "T", T_a, "P", Pa, "Air")        # Prandtl's Number of air 
+
+
 
 # ==========================================================
 # CALCULATIONS
@@ -46,123 +59,95 @@ Q = (V**2) / R
 # Heat flux
 q = Q / A
 
-# Film temperature
-Tf = (Te + Td) / 2
+# Reynolds number at film temperature
+Re_f = (U * d) / nu_f
 
 # Reynolds number
-Re = (U * d) / nu
+Re_a = (U * d) / nu_a
 
 # Heat transfer coefficient
-h = q / (Te - Td)
+h = q / (Ts - Ta)
 
 # Nusselt number
-Nu = (h * d) / k
-
-# ==========================================================
-# FLOW REGIME
-# ==========================================================
-
-flow_regime = []
-
-for r in Re:
-    if r < 4000:
-        flow_regime.append("Laminar")
-    elif 4000 <= r < 40000:
-        flow_regime.append("Transition")
-    else:
-        flow_regime.append("Turbulent")
+Nu = (h * d) / k_a
 
 # ==========================================================
 # CORRELATIONS (From Sheet)
 # ==========================================================
 
-Nu_corr_1 = 0.615 * (Re ** 0.466)
-Nu_corr_2 = 0.174 * (Re ** 0.618)
-Nu_corr_3 = 0.0239 * (Re ** 0.805)
 
-# ==========================================================
-# POWER LAW FIT (Experimental)
-# ==========================================================
+flow_regime = []
 
-log_Re = np.log(Re)
-log_Nu = np.log(Nu)
+for r in Re_f:
+    if r < 4000:
+        Nu_1 = 0.615 * (r ** 0.466)
+    elif 4000 <= r < 40000:
+        Nu_1 = 0.174 * (r ** 0.618)
+    else:
+        Nu_1 = 0.0239 * (r ** 0.805)
 
-n, log_C = np.polyfit(log_Re, log_Nu, 1)
-C_exp = np.exp(log_C)
+for r in Re_a:
+        Nu_2 = (0.4 * (r ** 0.5) + 0.06 * (r ** 0.667) ) * (Pr_f ** 0.4) * ((mu_a/mu_s) ** 0.25)
 
-Nu_fit = C_exp * (Re ** n)
+
 
 # ==========================================================
 # SAVE RESULTS
 # ==========================================================
 
-df["Velocity_m_s"] = U
+
 df["Heat_Input_W"] = Q
 df["Heat_Flux_W_m2"] = q
-df["Film_Temp_C"] = Tf
-df["Re"] = Re
-df["Flow_Regime"] = flow_regime
-df["h_W_m2K"] = h
+df["Heat_Transfer Coefficient_W/m2 k"] = h
+df["Velocity_m_s"] = U
+df["Re_a"] = Re_a
+df["Re_f"] = Re_f
 df["Nu"] = Nu
-df["Nu_corr_1"] = Nu_corr_1
-df["Nu_corr_2"] = Nu_corr_2
-df["Nu_corr_3"] = Nu_corr_3
-df["Nu_fit"] = Nu_fit
+df["Nu_corr_1"] = Nu_1
+df["Nu_corr_2"] = Nu_2
 
 df.to_csv("output_results.csv", index=False)
 
-print("\n==============================")
-print("Experimental Power Law Fit:")
-print(f"Nu = {C_exp:.4f} Re^{n:.4f}")
-print("==============================")
 print("\nResults saved to output_results.csv")
 
 # ==========================================================
 # PLOTS
 # ==========================================================
 
-# 1️⃣ Nu vs Re
+
+
+#  Log-Log Plot of Nu vs Re_a 
 plt.figure()
-plt.plot(Re, Nu, marker='o', label="Experimental")
-plt.plot(Re, Nu_corr_1, linestyle='--', label="Corr 1")
-plt.plot(Re, Nu_corr_2, linestyle='--', label="Corr 2")
-plt.plot(Re, Nu_corr_3, linestyle='--', label="Corr 3")
-plt.xlabel("Re")
+plt.loglog(Re_a, Nu, marker='o', label="Experimental")
+plt.xlabel("Re_a")
 plt.ylabel("Nu")
-plt.title("Nu vs Re")
+plt.title("Log-Log: Nu vs Re")
 plt.legend()
-plt.grid(True)
+plt.grid(True, which="both")
 plt.savefig("plot1.png")
 plt.close()
 
-# 2️⃣ Log-Log Plot
+
+#  Log-Log Plot of Nu_1 vs Re_f
 plt.figure()
-plt.loglog(Re, Nu, marker='o', label="Experimental")
-plt.loglog(Re, Nu_fit, linestyle='--', label="Power Law Fit")
-plt.xlabel("Re")
-plt.ylabel("Nu")
-plt.title("Log-Log: Nu vs Re")
+plt.loglog(Re_f, Nu_1, marker='o', label="Correlation 1")
+plt.xlabel("Re_f")
+plt.ylabel("Nu_1")
+plt.title("Log-Log: Nu_1 vs Re_f")
 plt.legend()
 plt.grid(True, which="both")
 plt.savefig("plot2.png")
 plt.close()
 
-# 3️⃣ h vs Re
+
+#  Log-Log Plot of Nu_2 vs Re_a 
 plt.figure()
-plt.plot(Re, h, marker='o')
-plt.xlabel("Re")
-plt.ylabel("h (W/m²K)")
-plt.title("h vs Re")
-plt.grid(True)
+plt.loglog(Re_a, Nu_2, marker='o', label="Correlation 2")
+plt.xlabel("Re_a")
+plt.ylabel("Nu_2")
+plt.title("Log-Log: Nu_2 vs Re_a")
+plt.legend()
+plt.grid(True, which="both")
 plt.savefig("plot3.png")
 plt.close()
 
-# 4️⃣ Velocity vs Re
-plt.figure()
-plt.plot(Re, U, marker='o')
-plt.xlabel("Re")
-plt.ylabel("Velocity (m/s)")
-plt.title("Velocity vs Re")
-plt.grid(True)
-plt.savefig("plot4.png")
-plt.close()
