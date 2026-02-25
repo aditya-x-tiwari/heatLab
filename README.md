@@ -52,7 +52,17 @@ Q = √(hPkA) (Tb − T∞) tanh(mL)
 
 ---
 
-## ⚙️ Tech Stack
+## ⚙️ Features
+
+✔ Automatic CSV-based data processing  
+✔ Log-log and standard plotting  
+✔ Theoretical correlation comparison  
+✔ Experimental vs analytical validation  
+✔ Full results export to CSV  
+
+---
+
+## 🛠 Tech Stack
 
 - Python 3.x
 - NumPy
@@ -61,9 +71,19 @@ Q = √(hPkA) (Tb − T∞) tanh(mL)
 
 ---
 
+## 📊 Output Generated
+
+- Publication-ready plots (PNG)
+- Processed result tables (CSV)
+- Reynolds number regime validation
+- Theoretical vs experimental comparison
+
+---
+
 ## 📎 How to Use
 
-1. Input experimental readings into CSV.
-2. Run the script:
+1. Prepare experimental data in CSV format.
+2. Run the corresponding script:
    ```bash
    python {experiment_name}.py
+   
