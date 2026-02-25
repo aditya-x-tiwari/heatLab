@@ -4,7 +4,7 @@ Computational toolkit for Heat Transfer Laboratory experiments.
 
 This repository contains Python-based automation scripts developed for analyzing heat transfer experiments, including forced convection over pin fins.
 
-Developed as part of undergraduate Mechanical Engineering coursework.
+Developed as part of undergraduate Mechanical Engineering coursework at Jadavpur University.
 
 ---
 
