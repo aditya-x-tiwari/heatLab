@@ -1,84 +1,37 @@
----
+# Heat Transfer Experiments
 
-# 🔥 2️⃣ README for `heatLab` Repository
+## Introduction
+Heat transfer is a fundamental concept in physics and engineering that describes the movement of thermal energy from one object or substance to another. This document provides an overview of various heat transfer experiments conducted in the heatLab, mirroring the style and structure of the fluidLab documentation.
 
-## 📘 Repository Name: `heatLab`
+## Experiment 1: Conduction through Solids
+- **Objective**: To observe the thermal conduction through different solid materials.
+- **Materials**: Copper rod, aluminum rod, wooden rod, heat source, thermometer.
+- **Procedure**:
+  1. Attach a thermometer to one end of each rod.
+  2. Heat the other end of the rods using a constant heat source.
+  3. Measure the temperature at regular intervals and record the data.
+- **Expected Results**: Copper is expected to conduct heat faster than aluminum and wood.
 
-### 🔹 Short GitHub Description
+## Experiment 2: Convection in Fluids
+- **Objective**: To study the convection currents in water when heated.
+- **Materials**: Beaker, water, heat source, dye (for visualization).
+- **Procedure**:
+  1. Fill the beaker with water and add a small amount of dye.
+  2. Heat the bottom of the beaker and observe the movement of the dye.
+  3. Record observations and time.
+- **Expected Results**: The dye should create visible currents as the water heats and circulates.
 
-> Computational analysis toolkit for Heat Transfer laboratory experiments including pin fin heat transfer under forced convection.
+## Experiment 3: Radiation Heat Transfer
+- **Objective**: To demonstrate heat transfer through radiation.
+- **Materials**: Infrared thermometer, heater, objects of different colors.
+- **Procedure**:
+  1. Place objects of different colors at equal distances from a heater.
+  2. Measure and record the temperature of each object using the infrared thermometer.
+- **Expected Results**: Darker objects should absorb more heat and have higher temperatures than lighter ones.
 
----
+## Conclusion
+The heat transfer experiments conducted in the heatLab provide valuable insights into the principles of thermal energy movement. Further experiments can expand upon these basics and explore advanced concepts such as thermal insulation and heat exchangers.
 
-## 📄 Full README.md for `heatLab`
-
-```markdown
-# heatLab 🔥
-
-Computational toolkit for Heat Transfer Laboratory experiments.
-
-This repository contains Python-based automation scripts developed for analyzing heat transfer experiments, including forced convection over pin fins.
-
-Developed as part of undergraduate Mechanical Engineering coursework.
-
----
-
-## 📌 Experiments Covered
-
-### 1️⃣ Heat Transfer from a Pin Fin (Forced Convection)
-
-Includes computation of:
-
-- Air velocity from orifice manometer
-- Reynolds number
-- Nusselt number
-- Convective heat transfer coefficient (h)
-- Fin parameter (m)
-- Heat transfer rate (Q_fin)
-- Fin efficiency (η)
-
----
-
-## 📊 Generated Outputs
-
-- Temperature distribution along fin (T vs x)
-- h vs Reynolds number
-- Heat transfer rate vs velocity
-- Computed performance metrics exported to CSV
-
----
-
-## 🔬 Implemented Theory
-
-Reynolds Number:
-Re = ρVD / μ
-
-Nusselt Correlation (Forced Convection):
-Nu = 0.615 Re^0.466  (40 < Re < 4000)
-
-Heat Transfer Coefficient:
-h = Nu·k / D
-
-Fin Efficiency:
-η = tanh(mL) / (mL)
-
-Heat Transfer Rate:
-Q = √(hPkA) (Tb − T∞) tanh(mL)
-
----
-
-## ⚙️ Tech Stack
-
-- Python 3.x
-- NumPy
-- Pandas
-- Matplotlib
-
----
-
-## 📎 How to Use
-
-1. Input experimental readings into CSV.
-2. Run the script:
-   ```bash
-   python pin_fin.py
+## References
+- Engineering Thermodynamics by Gordon Rogers
+- Heat Transfer: A Practical Approach by Yunus Çengel
