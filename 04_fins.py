@@ -142,7 +142,7 @@ def fin_temperature_profiles(
 
     # Ideal tip (tip temperature equals ambient)
     # theta(L) = 0
-    theta_ratio_ideal = np.sinh(m * (l_fin_m - x_m)) / np.sinh(m_l)
+    theta_ratio_ideal = np.exp( -m * x_m)
 
     # Convective tip
     theta_ratio_conv = (
