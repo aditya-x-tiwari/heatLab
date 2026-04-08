@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # ============================================================
 # USER-EDITABLE CONSTANTS (from the lab sheet)
 # ============================================================
-DATA_FILE = "pin_fin_observations.csv"
+DATA_FILE = "input_data.csv"
 
 D_FIN_MM = 12.7          # fin diameter in mm
 L_FIN_MM = 150.0         # fin length in mm
