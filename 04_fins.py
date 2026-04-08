@@ -280,7 +280,7 @@ def main():
         })
 
     results = pd.DataFrame(rows)
-    results.to_csv("pin_fin_results.csv", index=False)
+    results.to_csv("output_results.csv", index=False)
 
     # ============================================================
     # PRINT RESULTS
@@ -294,7 +294,7 @@ def main():
         "eta_ins", "effectiveness_ins", "effectiveness_ideal", "effectiveness_conv"
     ]].to_string(index=False))
 
-    print("\nResults saved to pin_fin_results.csv")
+    print("\nResults saved to output_results.csv")
 
     out_dir = Path("plots")
     out_dir.mkdir(exist_ok=True)
@@ -315,7 +315,7 @@ def main():
 
     axes[-1].set_xlabel("Position along fin (mm)")
     fig.tight_layout()
-    fig.savefig(out_dir / "observed_temperature_distribution.png", dpi=200)
+    fig.savefig( "observed_temperature_distribution.png", dpi=200)
 
     # ============================================================
     # PLOT 2: Theoretical temperature distribution (all tip models)
@@ -353,7 +353,7 @@ def main():
     axes[-1].set_xlabel("Position along fin (mm)")
     axes[0].legend()
     fig.tight_layout()
-    fig.savefig(out_dir / "theoretical_temperature_distribution.png", dpi=200)
+    fig.savefig("theoretical_temperature_distribution.png", dpi=200)
 
     # ============================================================
     # PLOT 3: Nu vs Re
@@ -365,7 +365,7 @@ def main():
     plt.title("Nu vs Re")
     plt.grid(True)
     fig.tight_layout()
-    fig.savefig(out_dir / "nu_vs_re.png", dpi=200)
+    fig.savefig("nu_vs_re.png", dpi=200)
 
     # ============================================================
     # PLOT 4: Log-log plot of Nu vs Re
@@ -377,7 +377,7 @@ def main():
     plt.title("Log-log plot of Nu vs Re")
     plt.grid(True, which="both")
     fig.tight_layout()
-    fig.savefig(out_dir / "nu_vs_re_loglog.png", dpi=200)
+    fig.savefig( "nu_vs_re_loglog.png", dpi=200)
 
     # ============================================================
     # PLOT 5: Heat transfer rate comparison
@@ -392,7 +392,7 @@ def main():
     plt.grid(True)
     plt.legend()
     fig.tight_layout()
-    fig.savefig(out_dir / "heat_transfer_rate_comparison.png", dpi=200)
+    fig.savefig("heat_transfer_rate_comparison.png", dpi=200)
 
     # ============================================================
     # PLOT 6: Effectiveness comparison
@@ -407,9 +407,8 @@ def main():
     plt.grid(True)
     plt.legend()
     fig.tight_layout()
-    fig.savefig(out_dir / "effectiveness_comparison.png", dpi=200)
+    fig.savefig("effectiveness_comparison.png", dpi=200)
 
-    print(f"Plots saved in {out_dir.resolve()}")
 
 
 if __name__ == "__main__":
