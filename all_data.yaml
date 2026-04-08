@@ -28,6 +28,10 @@ run,voltage,manometer_diff_cm,T1,T2,T3,T4,T5,T_ambient
 3,82,4.6,82,80,79,78,76,33
 
 
+run,voltage_V,manometer_top_cm,manometer_bottom_cm,manometer_diff_cm,T1_C,T2_C,T3_C,T4_C,T5_C,ambient_C
+1,82.0,19.9,10.6,9.3,70,67,66,65,64,33
+2,82.0,18.8,11.5,7.3,76,74,73,72,71,33
+3,82.0,17.5,12.9,4.6,82,80,79,78,76,33
 
 
 
