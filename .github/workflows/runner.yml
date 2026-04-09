@@ -22,7 +22,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Experiment
-        run: python 04_fins.py
+        run: python 02_cylinder.py
         
       - name: Upload results
         uses: actions/upload-artifact@v4
